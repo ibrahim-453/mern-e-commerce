@@ -1,1 +1,68 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* LIGHT THEME */
+  --color-bg-light: #f8faf9;
+  --color-bg-secondary: #e8f5e9;
+  --color-text-color: #1e3a34;
+  --color-btn: #34d399;
+  --color-hover: #6ee7b7;
+
+  /* DARK THEME */
+  --color-bg-dark: #101b16;
+  --color-bg-secondary-dark: #1f2f28;
+  --color-text-color-dark: #d1fae5;
+  --color-btn-dark: #10b981;
+  --color-hover-dark: #34d399;
+}
+
+@layer components {
+  .header {
+    @apply w-full h-auto min-h-16 px-4 py-4 bg-bg-secondary dark:bg-bg-secondary-dark sm:px-6 sticky top-0 z-50 shadow-md;
+  }
+  .content-wrapper {
+    @apply max-w-7xl mx-auto flex flex-col gap-4 items-center sm:flex-row sm:justify-between;
+  }
+  .main-container {
+    @apply w-full min-h-[400px] p-4 bg-bg-light dark:bg-bg-dark sm:p-8 md:p-12 lg:p-20;
+  }
+  .sub-container {
+    @apply max-w-7xl mx-auto flex flex-col gap-8 items-center lg:flex-row lg:justify-between;
+  }
+  .text-primary {
+    @apply text-sm font-medium text-text-color dark:text-text-color-dark sm:text-base;
+  }
+  .head-text {
+    @apply text-3xl font-bold text-text-color dark:text-text-color-dark sm:text-4xl md:text-5xl lg:text-6xl;
+  }
+  .sub-text {
+    @apply text-xl font-bold text-text-color dark:text-text-color-dark sm:text-2xl;
+  }
+  .btn-primary {
+    @apply px-2 py-1 hover:bg-btn hover:text-white duration-300 rounded-md text-sm sm:px-3 sm:text-base;
+  }
+  .btn-auth {
+    @apply w-full py-2 bg-btn font-semibold text-white rounded-md duration-300 hover:bg-hover hover:text-black;
+  }
+  .form-container {
+    @apply w-full max-w-md p-4 flex flex-col gap-3 justify-between items-center rounded-xl border-2
+    border-bg-secondary-dark dark:border-bg-secondary sm:p-6;
+  }
+  .form {
+    @apply w-full max-w-md p-2 flex flex-col gap-3 items-start sm:p-3;
+  }
+  .input-field {
+    @apply w-full flex flex-col items-start gap-2;
+  }
+  .input {
+    @apply w-full px-3 py-2 border-2 border-gray-300 dark:border-bg-secondary-dark focus:outline-none
+    focus:border-bg-secondary-dark dark:focus:border-bg-secondary rounded-md text-sm sm:px-4 sm:text-base;
+  }
+  .mobile-menu {
+    @apply flex flex-col gap-3 w-full mt-4 sm:hidden;
+  }
+  .desktop-nav {
+    @apply hidden sm:flex sm:items-center sm:gap-3;
+  }
+}

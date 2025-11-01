@@ -22,10 +22,10 @@
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.4",
+    "react-toastify": "^11.0.5",
     "redux-persist": "^6.0.0",
     "regex": "^6.0.1",
-    "tailwindcss": "^4.1.14",
-    "toastify": "^2.0.1"
+    "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

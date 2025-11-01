@@ -1,130 +1,169 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowDown, Menu, X } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import api from "../axiosInstance";
+import { toast } from "react-toastify";
+import { logout } from "../redux/features/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { Moon, Sun, Menu, X } from "lucide-react";
+import { toggleTheme } from "../redux/features/themeSlice";
+
 function Header() {
-  const links = [
-    { name: "Home", link: "/" },
-    { name: "About", link: "/about" },
-    { name: "Contact", link: "/contact" },
-  ];
-  const collections = [
-    { name: "Mens Collection" },
-    { name: "Women Collection" },
-    { name: "Kids Collection" },
-  ];
-  const [isDropDown, setIsDropDown] = useState(false);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { theme } = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const res = await api.post("/api/v1/auth/logout");
+      toast.success(res.data.message);
+      dispatch(logout());
+      setIsOpen(false);
+    } catch (error) {
+      console.log(`Logout Error : ${error.message}`);
+      toast.error(error.message || "Logout Failed");
+    }
+  };
+
+  const handleNavClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <header className="w-full h-16 px-6 py-5 bg-blue-400 text-white fixed top-0 left-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="md:hidden flex items-center">
-          <button onClick={() => setIsOpen(!isOpen)}>
-            <Menu size={18} />
-          </button>
-        </div>
-        <div>
-          <h2 className="text-lg tracking-wide md:text-2xl font-bold hover:text-black duration-300 cursor-default">
-            EZ WEAR
-          </h2>
-        </div>
-        <nav className="hidden md:flex md:items-center md:gap-2">
-          {links.map((item, index) => {
-            return (
-              <Link
-                className="px-3 text-lg font-semibold hover:text-black hover:bg-white duration-300 rounded-md"
-                key={index}
-                to={item.link}
-              >
-                {item.name}
-              </Link>
-            );
-          })}
-          <div
-            onMouseEnter={() => setIsDropDown(true)}
-            onMouseLeave={() => setIsDropDown(false)}
-            className="relative flex items-center px-3 text-lg font-semibold hover:text-black hover:bg-white duration-300 rounded-md cursor-pointer"
+    <div className="header">
+      <div className="content-wrapper">
+        <div className="w-full flex justify-between items-center sm:w-auto">
+          <h2
+            onClick={() => navigate("/")}
+            className="sub-text hover:text-btn cursor-pointer duration-300"
           >
-            <Link className="pr-5">Collections</Link>
-            <ArrowDown
-              className="absolute right-2 top-1/2 -translate-y-1/2"
-              size={18}
-            />
-            {isDropDown && (
-              <div className="w-56 absolute left-0 top-full mt-2 bg-blue-400 text-white rounded-md overflow-hidden">
-                {collections.map((item, index) => {
-                  return (
-                    <Link
-                      className="block px-2 hover:bg-black duration-300"
-                      key={index}
-                    >
-                      {item.name}
-                    </Link>
-                  );
-                })}
-              </div>
+            EZ-SHOP
+          </h2>
+
+          <div className="flex items-center gap-2 sm:hidden">
+            <button
+              className="px-2 py-2 hover:bg-hover duration-300 rounded-md"
+              onClick={() => dispatch(toggleTheme())}
+            >
+              {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+            <button
+              className="px-2 py-2 dark:text-white hover:bg-hover duration-300 rounded-md"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+        <nav className="desktop-nav">
+          <Link className="text-primary font-semibold btn-primary" to="/">
+            Home
+          </Link>
+          <Link className="text-primary font-semibold btn-primary" to="/about">
+            About
+          </Link>
+          <Link
+            className="text-primary font-semibold btn-primary"
+            to="/contact"
+          >
+            Contact
+          </Link>
+        </nav>
+        <div className="hidden sm:flex sm:items-center sm:gap-4">
+          <button
+            className="px-2 py-2 hover:bg-hover duration-300 rounded-md"
+            onClick={() => dispatch(toggleTheme())}
+          >
+            {theme === "light" ? (
+              <Moon
+                className="text-black hover:text-white duration-300"
+                size={20}
+              />
+            ) : (
+              <Sun
+                className="text-white hover:text-black duration-300"
+                size={20}
+              />
+            )}
+          </button>
+          {user && isAuthenticated ? (
+            <button
+              className="text-primary font-semibold btn-primary"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link
+                className="text-primary font-semibold btn-primary"
+                to="/register"
+              >
+                Sign Up
+              </Link>
+              <Link
+                className="text-primary font-semibold btn-primary"
+                to="/login"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
+        </div>
+        {isOpen && (
+          <div className="mobile-menu">
+            <Link
+              className="text-primary font-semibold btn-primary text-center"
+              to="/"
+              onClick={handleNavClick}
+            >
+              Home
+            </Link>
+            <Link
+              className="text-primary font-semibold btn-primary text-center"
+              to="/about"
+              onClick={handleNavClick}
+            >
+              About
+            </Link>
+            <Link
+              className="text-primary font-semibold btn-primary text-center"
+              to="/contact"
+              onClick={handleNavClick}
+            >
+              Contact
+            </Link>
+            <hr className="border-text-color dark:border-text-color-dark" />
+            {user && isAuthenticated ? (
+              <button
+                className="text-primary font-semibold btn-primary"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link
+                  className="text-primary font-semibold btn-primary text-center"
+                  to="/register"
+                  onClick={handleNavClick}
+                >
+                  Sign Up
+                </Link>
+                <Link
+                  className="text-primary font-semibold btn-primary text-center"
+                  to="/login"
+                  onClick={handleNavClick}
+                >
+                  Sign In
+                </Link>
+              </>
             )}
           </div>
-        </nav>
-        <div className="flex items-center gap-2 md:gap-5">
-          <Link className="px-2 md:px-3 text-md md:text-lg font-semibold border border-transparent text-black bg-white hover:border-white hover:text-white hover:bg-blue-400 duration-300  rounded-md">
-            Sign Up
-          </Link>
-          <Link className="px-2 md:px-3 text-md md:text-lg  text-white hover:text-black hover:bg-white duration-300 rounded-md">
-            Sign In
-          </Link>
-        </div>
+        )}
       </div>
-      {isOpen && (
-        <>
-          <div className={`w-full min-h-screen backdrop-blur-lg transition-opacity ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-            <div className={`md:hidden fixed top-0 left-0 w-1/2 min-h-screen bg-blue-400 text-white duration-300 transform transition-transform ${isOpen ? "translate-x-0":"-x-tarnslate-full"} duration-300`}>
-              <div>
-                <button onClick={() => setIsOpen(false)}>
-                  <X />
-                </button>
-              </div>
-              <nav className="flex flex-col justify-start items-start gap-5">
-                {links.map((item, index) => {
-                  return (
-                    <Link
-                      className="w-full px-3 text-lg font-semibold hover:text-black hover:bg-white duration-300"
-                      key={index}
-                      to={item.link}
-                    >
-                      {item.name}
-                    </Link>
-                  );
-                })}
-                <div
-                  onClick={() => setIsDropDown(!isDropDown)}
-                  className="relative w-full max-w-md flex items-center px-3 text-lg font-semibold hover:text-black hover:bg-white duration-300 rounded-md cursor-pointer"
-                >
-                  <Link className="pr-5">Collections</Link>
-                  <ArrowDown
-                    className="absolute right-2 top-1/2 -translate-y-1/2"
-                    size={18}
-                  />
-                  {isDropDown && (
-                    <div className="w-full absolute left-0 top-10 bg-blue-400 text-white rounded-md">
-                      {collections.map((item, index) => {
-                        return (
-                          <Link
-                            className="w-full px-2 flex flex-col items-start gap-2 hover:bg-black duration-300"
-                            key={index}
-                          >
-                            {item.name}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </nav>
-            </div>
-          </div>
-        </>
-      )}
-    </header>
+    </div>
   );
 }
 
