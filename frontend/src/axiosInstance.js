@@ -21,10 +21,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const { data } = await api.post("/api/v1/auth/refreshToken");
-        const newUser = data?.data?.user;
+        const res  = await api.post("/api/v1/auth/refreshToken",{withCredentials:true});
+        const newUser = res.data.data?.user;
         if (newUser) {
-          store.dispatch(setUser({ auth: newUser }));
+          store.dispatch(setUser({ user: newUser }));
         }
         return api(originalRequest);
       } catch (refreshErr) {

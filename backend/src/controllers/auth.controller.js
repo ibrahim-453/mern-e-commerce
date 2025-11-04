@@ -11,11 +11,14 @@ import validator from "validator";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: false,
   sameSite: "strict",
 };
 
-const accessTokenOptions = { ...cookieOptions, maxAge: 24 * 60 * 60 * 1000 }; // 1 day
+const accessTokenOptions = {
+  ...cookieOptions,
+  maxAge: 24 * 60 * 60 * 1000,
+};
 const refreshTokenOptions = {
   ...cookieOptions,
   maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -154,8 +157,7 @@ const googleCallback = [
   asyncHandler(async (req, res) => {
     const user = req.user;
     if (!user) throw new ApiError(400, "Google authentication failed");
-
-    // ensure we load the complete user from DB (so _id, role etc. exist)
+    
     const dbUser = (await User.findById(user._id)) || user;
 
     const { accessToken, refreshToken } = generateTokens(dbUser);

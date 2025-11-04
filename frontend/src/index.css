@@ -30,6 +30,12 @@
   .sub-container {
     @apply max-w-7xl mx-auto flex flex-col gap-8 items-center lg:flex-row lg:justify-between;
   }
+  .background {
+    @apply bg-bg-light dark:bg-bg-dark
+  }
+  .bg-secondary {
+    @apply bg-bg-secondary dark:bg-bg-secondary-dark
+  }
   .text-primary {
     @apply text-sm font-medium text-text-color dark:text-text-color-dark sm:text-base;
   }
@@ -45,6 +51,12 @@
   .btn-auth {
     @apply w-full py-2 bg-btn font-semibold text-white rounded-md duration-300 hover:bg-hover hover:text-black;
   }
+  .cross-btn {
+    @apply absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600
+  }
+  .loader {
+    @apply animate-spin rounded-full h-12 w-12 border-4 border-btn dark:border-btn-dark border-t-transparent
+  }
   .form-container {
     @apply w-full max-w-md p-4 flex flex-col gap-3 justify-between items-center rounded-xl border-2
     border-bg-secondary-dark dark:border-bg-secondary sm:p-6;
@@ -56,8 +68,20 @@
     @apply w-full flex flex-col items-start gap-2;
   }
   .input {
-    @apply w-full px-3 py-2 border-2 border-gray-300 dark:border-bg-secondary-dark focus:outline-none
+    @apply w-full px-3 py-2 border-2 border-gray-300 dark:border-bg-secondary/20 focus:outline-none
     focus:border-bg-secondary-dark dark:focus:border-bg-secondary rounded-md text-sm sm:px-4 sm:text-base;
+  }
+  .product-links {
+    @apply flex items-center px-5 py-3 bg-btn dark:bg-btn-dark rounded-full gap-3  cursor-pointer
+  }
+  .product-image {
+    @apply w-full border-2 border-dashed border-bg-secondary-dark dark:border-bg-secondary rounded-lg p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-bg-light dark:hover:bg-bg-dark transition-colors
+  }
+  .preview-image {
+    @apply w-full h-32 object-cover rounded-lg border-2 border-btn dark:border-btn-dark
+  }
+  .image-no {
+    @apply absolute bottom-2 left-2 bg-btn dark:bg-btn-dark text-white text-xs px-2 py-1 rounded font-semibold
   }
   .mobile-menu {
     @apply flex flex-col gap-3 w-full mt-4 sm:hidden;

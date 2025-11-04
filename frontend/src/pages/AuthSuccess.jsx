@@ -14,7 +14,7 @@ function AuthSuccess() {
       try {
         const res = await api.get("/api/v1/auth/me");
         dispatch(login({ user: res.data.data.safeUser }));
-        navigate("/"); // go home after successful fetch
+        navigate("/");
       } catch (err) {
         console.error("Failed to fetch user:", err);
         navigate("/login");
