@@ -19,7 +19,7 @@ router.route("/login").post(login);
 router.route("/logout").post(verifyJWT, logout);
 router.route("/google").get(googleAuth);
 router.route("/google/callback").get(googleCallback);
-router.route("/refreshToken").post(verifyJWT, newAccessToken);
+router.route("/refreshToken").post(newAccessToken);
 router.route("/me").get(verifyJWT, getUser);
 
 export default router;

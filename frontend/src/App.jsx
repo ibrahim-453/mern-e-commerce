@@ -14,6 +14,12 @@ import Users from "./pages/Users";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditPrduct";
+import ProductByCategory from "./pages/ProductByCategory";
+import ProductBySubCategory from "./pages/ProductBySubCategory";
+import SingleProduct from "./pages/SingleProduct";
+import Cart from "./pages/Cart";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 
 function App() {
   return (
@@ -25,7 +31,13 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/auth/success" element={<AuthSuccess />} />
+          <Route path="/products/category/:mainCategoryName" element={<ProductByCategory />} />
+          <Route path="/products/category/:mainCategoryName/:subCategoryName" element={<ProductBySubCategory />} />
+          <Route path="/product/category/:mainCategoryName/:subCategoryName/:productName" element={<SingleProduct />} />
           <Route element={<ProtectedRoute />}>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
             <Route element={<Dashboard />}>
               <Route path="/dashboard/stats" element={<Stats />} />
               <Route path="/dashboard/users" element={<Users />} />
