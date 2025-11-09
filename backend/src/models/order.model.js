@@ -12,7 +12,14 @@ const orderItemSchema = new mongoose.Schema({
 },{_id:false})
 
 const orderSchema = new mongoose.Schema(
-    {
+    {   
+        orderId : {
+            type:String,
+            unique:true,
+            required:true,
+            trim:true,
+            index:true
+        },
         customer:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User"
@@ -23,8 +30,11 @@ const orderSchema = new mongoose.Schema(
             default:0
         },
         shippingAddress:{
+            fullname:String,
+            phone:Number,
             street:String,
             city:String,
+            state:String,
             postalcode:Number,
             country:String
         },

@@ -20,6 +20,7 @@ import SingleProduct from "./pages/SingleProduct";
 import Cart from "./pages/Cart";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
+import ShippingAddress from "./pages/ShippingAddress";
 
 function App() {
   return (
@@ -31,26 +32,42 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/auth/success" element={<AuthSuccess />} />
-          <Route path="/products/category/:mainCategoryName" element={<ProductByCategory />} />
-          <Route path="/products/category/:mainCategoryName/:subCategoryName" element={<ProductBySubCategory />} />
-          <Route path="/product/category/:mainCategoryName/:subCategoryName/:productName" element={<SingleProduct />} />
+          <Route
+            path="/products/category/:mainCategoryName"
+            element={<ProductByCategory />}
+          />
+          <Route
+            path="/products/category/:mainCategoryName/:subCategoryName"
+            element={<ProductBySubCategory />}
+          />
+          <Route
+            path="/product/category/:mainCategoryName/:subCategoryName/:productName"
+            element={<SingleProduct />}
+          />
           <Route element={<ProtectedRoute />}>
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/payment-cancel" element={<PaymentCancel />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancel" element={<PaymentCancel />} />
+            <Route path="/shipping-address" element={<ShippingAddress />} />
             <Route element={<Dashboard />}>
               <Route path="/dashboard/stats" element={<Stats />} />
               <Route path="/dashboard/users" element={<Users />} />
               <Route path="/dashboard/products" element={<Products />} />
-              <Route path="/dashboard/create-product" element={<CreateProduct />} />
-              <Route path="/dashboard/edit-product/:productId" element={<EditProduct />} />
+              <Route
+                path="/dashboard/create-product"
+                element={<CreateProduct />}
+              />
+              <Route
+                path="/dashboard/edit-product/:productId"
+                element={<EditProduct />}
+              />
             </Route>
           </Route>
         </Route>
       </Routes>
       <ToastContainer
-        position="top-right"
-        autoClose={2000}
+        position="top-left"
+        autoClose={1000}
         hideProgressBar={false}
         closeOnClick
         pauseOnHover
