@@ -10,7 +10,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
-import Users from "./pages/Users";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditPrduct";
@@ -21,6 +20,12 @@ import Cart from "./pages/Cart";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import ShippingAddress from "./pages/ShippingAddress";
+import VerifyToken from "./pages/VerifyToken";
+import ChangePassword from "./pages/ChangePassword";
+import UserOrders from "./pages/UserOrders";
+import AdminOrders from "./pages/AdminOrders";
+import UpdateStatus from "./pages/UpdateStatus";
+import AdminUsers from "./pages/AdminUsers";
 
 function App() {
   return (
@@ -49,10 +54,15 @@ function App() {
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-cancel" element={<PaymentCancel />} />
             <Route path="/shipping-address" element={<ShippingAddress />} />
+            <Route path="/verify-reset-token" element={<VerifyToken />} />
+            <Route path="change-password" element={<ChangePassword />} />
+            <Route path="/my-orders" element={<UserOrders />} />
             <Route element={<Dashboard />}>
               <Route path="/dashboard/stats" element={<Stats />} />
-              <Route path="/dashboard/users" element={<Users />} />
+              <Route path="/dashboard/users" element={<AdminUsers />} />
               <Route path="/dashboard/products" element={<Products />} />
+              <Route path="/dashboard/orders" element={<AdminOrders />} />
+              <Route path="/dashboard/change-order-status/:orderId" element={<UpdateStatus />} />
               <Route
                 path="/dashboard/create-product"
                 element={<CreateProduct />}
@@ -67,7 +77,7 @@ function App() {
       </Routes>
       <ToastContainer
         position="top-left"
-        autoClose={1000}
+        autoClose={5000}
         hideProgressBar={false}
         closeOnClick
         pauseOnHover

@@ -110,14 +110,14 @@ const confirmPayment = asyncHandler(async (req, res) => {
 
   const mailOptions = {
     from: process.env.SENDER_EMAIL,
-    to: user.email,
+    to: order.shippingAddress.email,
     subject: "Order Confirmation - Payment Successful",
     html: `
       <h2>Order Confirmed✅</h2>
       <p>Hi ${user.fullname},</p>
       <p>We’ve received your payment of <strong>$${totalPrice} against Order ID : ${orderId}</strong>. Your order is now being processed.</p>
       <h3>Shipping Address:</h3>
-      <p>${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.country}, ${shippingAddress.postalcode}</p>
+      <p>${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.country}, ${order.shippingAddress.postalcode}</p>
       <h3>Order Details:</h3>
       <ul>
         ${items.map((i) => `<li>${i.productName} - Quantity: ${i.quantity}</li>`).join("")}
@@ -135,8 +135,15 @@ const confirmPayment = asyncHandler(async (req, res) => {
 });
 
 const getMyOrder = asyncHandler(async (req, res) => {
+  const startIndex = parseInt(req.query.startIndex) || 0;
+  const limit = parseInt(req.query.limit) || 10;
+  const sortDirection = req.query.order === "asc" ? 1 : -1;
   const userId = req.user._id;
-  const orders = await Order.find({ customer: userId });
+  const orders = await Order.find({ customer: userId })
+    .populate("items.product")
+    .skip(startIndex)
+    .limit(limit)
+    .sort({ createdAt: sortDirection });
   return res
     .status(200)
     .json(new ApiResponse(200, "Orders fetched successfully", { orders }));
@@ -146,7 +153,12 @@ const getAdminOrders = asyncHandler(async (req, res) => {
   const startIndex = parseInt(req.query.startIndex) || 0;
   const limit = parseInt(req.query.limit) || 10;
   const sortDirection = req.query.order === "asc" ? 1 : -1;
+  const role = req.user.role;
+  if (role !== "admin") {
+    throw new ApiError(401, "Unauthorized Request");
+  }
   const orders = await Order.find()
+    .populate("items.product")
     .skip(startIndex)
     .limit(limit)
     .sort({ createdAt: sortDirection });
@@ -160,15 +172,67 @@ const getAdminOrders = asyncHandler(async (req, res) => {
   const lastMonthOrders = await Order.countDocuments({
     createdAt: { $gte: oneMonthAgo },
   });
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(200, "Orders fetched successfully", {
-        orders,
-        totalOrders,
-        lastMonthOrders,
-      })
-    );
+  return res.status(200).json(
+    new ApiResponse(200, "Orders fetched successfully", {
+      orders,
+      totalOrders,
+      lastMonthOrders,
+    })
+  );
 });
 
-export { createCheckOutSession, confirmPayment };
+const getOrder = asyncHandler(async (req, res) => {
+  let { orderId } = req.params;
+
+  const order = await Order.findOne({ orderId }).populate("items.product");
+  if (!order) throw new ApiError(404, "Order not found");
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Order fetched successfully", { order }));
+});
+
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+  const role = req.user.role;
+  if (role !== "admin") {
+    throw new ApiError(401, "Unauthorized Request");
+  }
+  const order = await Order.findOne({ orderId }).populate("items.product");
+  if (!order) throw new ApiError(404, "Order not found");
+  order.orderStatus = status;
+  await order.save();
+  const mailOptions = {
+    from: process.env.SENDER_EMAIL,
+    to: order.shippingAddress.email,
+    subject: "Order Status",
+    html: `
+      <h2>Order ${order.orderStatus}</h2>
+      <p>Hi ${order.shippingAddress.fullname},</p>
+      <p>Your Order against Order ID : ${order.orderId}</strong> is now being ${order.orderStatus}.</p>
+      <h3>${order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)} Address:</h3>
+      <p>${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.country}, ${order.shippingAddress.postalcode}</p>
+      <h3>Order Details:</h3>
+      <ul>
+        ${order.items.map((i) => `<li>${i.product.name} - Quantity: ${i.quantity}</li>`).join("")}
+      </ul>
+      <p>We'll notify you once your order is delivered.</p>
+      <br/>
+      <p>Thanks for shopping with us!</p>
+      <p><strong>Your EZ-SHOP Team</strong></p>
+    `,
+  };
+  transporter.sendMail(mailOptions);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Order status updated successfully", { order }));
+});
+
+export {
+  createCheckOutSession,
+  confirmPayment,
+  getMyOrder,
+  getAdminOrders,
+  updateOrderStatus,
+  getOrder,
+};

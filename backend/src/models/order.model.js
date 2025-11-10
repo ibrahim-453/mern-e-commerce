@@ -31,6 +31,7 @@ const orderSchema = new mongoose.Schema(
         },
         shippingAddress:{
             fullname:String,
+            email:String,
             phone:Number,
             street:String,
             city:String,
@@ -49,7 +50,7 @@ const orderSchema = new mongoose.Schema(
         },
         orderStatus:{
             type:String,
-            enum:["processing","shipping","canceled","delieverd"],
+            enum:["processing","shipping","canceled","delivered"],
             default:"processing"
         }
     },

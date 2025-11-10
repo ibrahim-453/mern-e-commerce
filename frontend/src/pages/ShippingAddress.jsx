@@ -15,11 +15,12 @@ function ShippingAddress() {
   const navigate = useNavigate();
   const [shippingAddress, setShippingAddress] = useState({
     fullname: "",
+    email:"",
     phone: "",
     street: "",
     city: "",
     state: "",
-    postalCode: "",
+    postalcode: "",
     country: "",
   });
   const [loading, setLoading] = useState(false);
@@ -34,9 +35,9 @@ function ShippingAddress() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post("/api/v1/order/create-checkout-session", {
+      const res = await api.post("/api/v1/order/create-checkout-session",
         shippingAddress,
-      });
+      );
 
       if (res.data?.data?.url) {
         window.location.href = res.data.data.url;
@@ -77,7 +78,7 @@ function ShippingAddress() {
                 </div>
               </div>
               <form onSubmit={handleCheckout} className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="input-field">
                     <label
                       htmlFor="fullname"
@@ -93,6 +94,24 @@ function ShippingAddress() {
                       onChange={handleChange}
                       className="input text-primary"
                       placeholder="John Doe"
+                      required
+                    />
+                  </div>
+                  <div className="input-field">
+                    <label
+                      htmlFor="email"
+                      className="text-primary font-semibold"
+                    >
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={shippingAddress.email}
+                      onChange={handleChange}
+                      className="input text-primary"
+                      placeholder="jhon@example.com"
                       required
                     />
                   </div>
@@ -179,16 +198,16 @@ function ShippingAddress() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="input-field">
                     <label
-                      htmlFor="postalCode"
+                      htmlFor="postalcode"
                       className="text-primary font-semibold"
                     >
                       Postal Code *
                     </label>
                     <input
                       type="text"
-                      id="postalCode"
-                      name="postalCode"
-                      value={shippingAddress.postalCode}
+                      id="postalcode"
+                      name="postalcode"
+                      value={shippingAddress.postalcode}
                       onChange={handleChange}
                       className="input text-primary"
                       placeholder="10001"

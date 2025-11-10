@@ -24,12 +24,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    orderHistory: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Order",
-      },
-    ],
     refreshToken: {
       type: String,
     },

@@ -33,6 +33,19 @@ function Header() {
   };
 
   const handleNavClick = () => setIsOpen(false);
+  const handleResetToken = async()=>{
+    try {
+      const res = await api.post("/api/v1/user/reset-token")
+      if(res){
+        toast.success(res.data.message)
+        setIsProfile(false)
+        navigate("/verify-reset-token",{state:{email:user.email}})
+      }
+    } catch (error) {
+      console.log(`Reset Error : ${error.message}`);
+      toast.error("Token sending Failed" || error.message);
+    }
+  }
 
   useEffect(() => {
     const getCategory = async () => {
@@ -116,11 +129,17 @@ function Header() {
                 {isProfile && (
                   <div className="absolute right-0 top-full mt-2 w-48 bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                     <Link
-                      to="/profile"
+                      className="block px-4 py-2 text-sm text-primary hover:bg-hover"
+                      onClick={handleResetToken}
+                    >
+                      Change Password
+                    </Link>
+                    <Link
+                      to="my-orders"
                       className="block px-4 py-2 text-sm text-primary hover:bg-hover"
                       onClick={() => setIsProfile(false)}
                     >
-                      Profile
+                      Order History
                     </Link>
                     {user.role === "admin" && (
                       <Link
@@ -234,11 +253,17 @@ function Header() {
               <>
                 <hr className="my-2 border-gray-300 dark:border-gray-700" />
                 <Link
-                  to="/profile"
+                  className="btn-primary text-primary"
+                  onClick={handleResetToken}
+                >
+                  Change Password
+                </Link>
+                <Link
+                  to="my-orders"
                   className="btn-primary text-primary"
                   onClick={handleNavClick}
                 >
-                  Profile
+                  Order History
                 </Link>
                 {user.role === "admin" && (
                   <Link
